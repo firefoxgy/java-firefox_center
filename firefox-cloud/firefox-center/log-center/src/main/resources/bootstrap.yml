@@ -1,0 +1,51 @@
+firefox:
+  server:
+    port: ${PORT:8005}
+    management-port: ${MANAGEMENT_PORT:18005}
+  nacos:
+    server-addr: ${NACOS_SERVERADDR:@nacos.server-addr@}
+    namespace: ${NACOS_ID:@nacos.namespace@}
+    username: ${NACOS_USERNAME:@nacos.username@}
+    password: ${NACOS_PASSWORD:@nacos.password@}
+    group: ${NACOS_GROUP:@nacos.group@}
+    yml:
+      group: ${NACOS_YML_GROUP:@nacos.yml.group@}
+
+server:
+  port: ${firefox.server.port}
+spring:
+  application:
+    name: '@project.artifactId@'
+  main:
+    allow-bean-definition-overriding: true
+  mail:
+    host: smtp.163.com
+    username: ${FIREFOX_USERNAME:}
+    password: ${FIREFOX_PASSWORD:}
+    default-encoding: UTF-8
+  cloud:
+    nacos:
+      config:
+        server-addr: ${FIREFOX_SERVER_ADDR:}
+        namespace: ${firefox.nacos.namespace}
+        group: ${firefox.nacos.group}
+        username: ${FIREFOX_USERNAME:}
+        password: ${FIREFOX_PASSWORD:}
+        context-path: /nacos
+      discovery:
+        server-addr: ${FIREFOX_SERVER_ADDR:}
+        namespace: ${spring.cloud.nacos.config.namespace}
+        group: ${spring.cloud.nacos.config.group}
+        username: ${FIREFOX_USERNAME:}
+        password: ${FIREFOX_PASSWORD:}
+management:
+  server:
+    port: ${firefox.server.management-port}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        exclude:
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,65 @@
+[{
+  "id": "firefox-authenticator",
+  "order": 0,
+  "predicates": [{
+    "args": {
+      "pattern": "/api/oauth/**"
+    },
+    "name": "Path"
+  }],
+  "filters": [{
+    "args": {
+      "pattern": 1
+    },
+    "name": "StripPrefix"
+  }],
+  "uri": "lb://firefox-authenticator"
+},{
+  "id": "firefox-config-center-server",
+  "order": 0,
+  "predicates": [{
+    "args": {
+      "pattern": "/api/configcenter/**"
+    },
+    "name": "Path"
+  }],
+  "filters": [{
+    "args": {
+      "pattern": 1
+    },
+    "name": "StripPrefix"
+  }],
+  "uri": "lb://firefox-config-center-server"
+},{
+  "id": "firefox-app-center-server",
+  "order": 0,
+  "predicates": [{
+    "args": {
+      "pattern": "/api/appcenter/**"
+    },
+    "name": "Path"
+  }],
+  "filters": [{
+    "args": {
+      "pattern": 1
+    },
+    "name": "StripPrefix"
+  }],
+  "uri": "lb://firefox-app-center-server"
+},{
+  "id": "firefox-user-center-server",
+  "order": 0,
+  "predicates": [{
+    "args": {
+      "pattern": "/api/usercenter/**"
+    },
+    "name": "Path"
+  }],
+  "filters": [{
+    "args": {
+      "pattern": 1
+    },
+    "name": "StripPrefix"
+  }],
+  "uri": "lb://firefox-user-center-server"
+}]

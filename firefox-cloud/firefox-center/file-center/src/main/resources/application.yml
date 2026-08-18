@@ -1,0 +1,42 @@
+#aliyun:
+#  oss:
+#    access-key: 你的密钥
+#    accessKeySecret: 你的密钥
+#    endpoint: 你的端点
+#    bucketName: 你的名称
+#    domain: 你的说明
+
+qiniu:
+  oss:
+    access-key: ${FIREFOX_ACCESS_KEY:}
+    accessKeySecret: ${FIREFOX_ACCESS_KEY_SECRET:}
+    endpoint: http://pkqtmn0p1.bkt.clouddn.com
+    bucketName: public-oss
+
+spring:
+  datasource:
+    url: ${FIREFOX_URL:}
+    username: ${FIREFOX_USERNAME:}
+    password: ${FIREFOX_PASSWORD:}
+    driver-class-name: com.mysql.jdbc.Driver
+
+  redis:
+    host: ${firefox.redis.host}
+    port: ${firefox.redis.port}
+    timeout: ${firefox.redis.timeout}
+
+mybatis-plus:
+  mapper-locations:
+    - classpath*:com/firefox/center/**/xml/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.firefox.center.file.model
+  global-config:
+    db-config:
+      id-type: INPUT
+zlt:
+  swagger:
+    enabled: true
+    title: 文件中心
+    description: 文件中心接口文档
+    version: 1.0
+    base-package: com.firefox.center.file.controller

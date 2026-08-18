@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.firefox.center</groupId>
+        <artifactId>firefox-open</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>firefox-api</artifactId>
+    <description>feign接口</description>
+    <packaging>pom</packaging>
+    <modules>
+        <!-- 应用中心接口 -->
+        <module>app-api</module>
+        <!-- 配置中心接口 -->
+        <module>config-api</module>
+        <!-- 日志中心接口 -->
+        <module>log-api</module>
+        <!-- 用户中心接口 -->
+        <module>user-api</module>
+        <!-- 用户中心接口 -->
+        <module>credit-api</module>
+    </modules>
+</project>

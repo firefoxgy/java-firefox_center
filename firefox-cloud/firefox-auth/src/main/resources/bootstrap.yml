@@ -1,0 +1,68 @@
+firefox:
+  server:
+    port: ${PORT:8920}
+    management-port: ${MNG_PORT:18920}
+  nacos:
+    server-addr: ${FIREFOX_SERVER_ADDR:}
+    namespace: b8c05865-7bbd-476a-be3d-cc4a0eff8faf
+    username: ${FIREFOX_USERNAME:}
+    password: ${FIREFOX_PASSWORD:}
+    group: open
+    yml:
+      group: DEFAULT_GROUP
+  redis:
+    ip: ${FIREFOX_IP:}
+    port: 6379
+    password: ${FIREFOX_PASSWORD:}
+    database: 0
+    timeout: 5000
+  ##### 数据库配置
+  datasource:
+    ip: ${FIREFOX_IP:}
+    port: 3307
+    username: ${FIREFOX_USERNAME:}
+    password: ${FIREFOX_PASSWORD:}
+
+server:
+  port: ${firefox.server.port}
+spring:
+  application:
+    name: 'test-auth'
+  main:
+    allow-bean-definition-overriding: true
+  mail:
+    host: smtp.163.com
+    username: ${FIREFOX_USERNAME:}
+    password: ${FIREFOX_PASSWORD:}
+    default-encoding: UTF-8
+  cloud:
+    nacos:
+      config:
+        server-addr: ${FIREFOX_SERVER_ADDR:}
+        context-path: /nacos
+        namespace: ${spring.cloud.nacos.discovery.namespace}
+        group: ${spring.cloud.nacos.discovery.group}
+        username: ${FIREFOX_USERNAME:}
+        password: ${FIREFOX_PASSWORD:}
+      discovery:
+        server-addr: ${FIREFOX_SERVER_ADDR:}
+        namespace: ${firefox.nacos.namespace}
+        group: ${firefox.nacos.group}
+        username: ${FIREFOX_USERNAME:}
+        password: ${FIREFOX_PASSWORD:}
+management:
+  server:
+    port: ${firefox.server.management-port}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        exclude:
+  endpoint:
+    health:
+      show-details: always
+encrypt:
+  key-store:
+    location: classpath:firefoxcenter.jks
+    secret: ${FIREFOX_SECRET:}
+    alias: firefoxcenter

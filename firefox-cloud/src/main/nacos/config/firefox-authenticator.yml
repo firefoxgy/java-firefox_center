@@ -1,0 +1,46 @@
+server:
+  port: 9999
+  management-port: 19999
+
+firefox:
+  swagger:
+    docket:
+      user-center:
+        title: 认证模块
+        base-package: com.firefox.center.authenticator.controller
+
+management:
+  server:
+    port: ${server.management-port}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        exclude:
+  endpoint:
+    health:
+      show-details: always
+
+# default context 连接超时时间
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 30000
+
+my:
+  security:
+    oauth2:
+      client:
+        accessTokenValiditySeconds: ${FIREFOX_ACCESS_TOKEN_VALIDITY_SECONDS:}
+        refreshTokenValiditySeconds: ${FIREFOX_REFRESH_TOKEN_VALIDITY_SECONDS:}
+    web:
+      resourceIgnore:
+        - /oauth/**
+        - /mobile/**
+        - /register/**
+      securityIgnore:
+        - /oauth/**
+        - /mobile/**
+        - /register/**

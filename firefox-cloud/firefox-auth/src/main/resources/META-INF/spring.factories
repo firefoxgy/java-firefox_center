@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.firefox.center.oauth.config.AuthorizationServerConfig,\
+com.firefox.center.oauth.config.ClientDetailsConfig

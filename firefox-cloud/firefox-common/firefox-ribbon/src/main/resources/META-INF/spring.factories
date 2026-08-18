@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.firefox.center.common.ribbon.RibbonAutoConfigure,\
+com.firefox.center.common.ribbon.FeignAutoConfigure,\
+com.firefox.center.common.ribbon.RestTemplateAutoConfigure

@@ -1,0 +1,19 @@
+server:
+  port: 5000
+
+zlt:
+  nacos:
+    server-addr: ${FIREFOX_SERVER_ADDR:}
+
+spring:
+  application:
+    name: '@project.artifactId@'
+  cloud:
+    nacos:
+      config:
+        server-addr: ${FIREFOX_SERVER_ADDR:}
+        file-extension: yml
+        shared-dataids: common.yml
+        refreshable-dataids: common.yml
+      discovery:
+        server-addr: ${FIREFOX_SERVER_ADDR:}

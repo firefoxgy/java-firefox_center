@@ -1,0 +1,78 @@
+spring:
+  shardingsphere:
+    props:
+      sql:
+        show: true
+    datasource:
+      names: master,slave1
+      master:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: ${FIREFOX_URL:}
+        username: ${FIREFOX_USERNAME:}
+        password: ${FIREFOX_PASSWORD:}
+      slave1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: ${FIREFOX_URL:}
+        username: ${FIREFOX_USERNAME:}
+        password: ${FIREFOX_PASSWORD:}
+    masterslave:
+      load-balance-algorithm-type: round_robin
+    sharding:
+      default-data-source-name: master
+      tables:
+        t_credit_log:
+          sharding-start: 202102
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+          actual-data-nodes: master.t_credit_log_$->{2021}0$->{2..6}
+          table-strategy:
+            standard:
+              range-algorithm-class-name: com.firefox.center.credit.config.sharding.DefaultTableRangeShardingAlgorithm
+              precise-algorithm-class-name: com.firefox.center.credit.config.sharding.DefaultTableShardingAlgorithm
+              sharding-column: create_time
+      master-slave-rules:
+        master:
+          master-data-source-name: master
+          slave-data-source-names: slave1
+  redis:
+    host: ${firefox.redis.ip}
+    port: ${firefox.redis.port}
+    password: ${FIREFOX_PASSWORD:}
+    database: ${firefox.redis.database}
+    timeout: ${firefox.redis.timeout}
+    command-timeout: 5000
+    max-attempts: 5
+    max-redirects: 3
+    max-active: 20
+    max-wait: -1
+    max-idle: 8
+    min-idle: 2
+    test-on-borrow: true
+
+mybatis-plus:
+  mapper-locations:
+    - classpath*:com/firefox/center/**/xml/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.firefox.center.user.model
+  global-config:
+    db-config:
+      id-type: auto
+
+firefox:
+  sharding:
+    start: 202101
+  swagger:
+    enabled: true
+    title: 用户中心
+    description: 用户中心接口文档
+    version: 1.0
+    base-package: com.firefox.center.user.controller
+  cache-manager:
+    configs:
+      - key: menu
+        second: 600
+      - key: user
+        second: 1800

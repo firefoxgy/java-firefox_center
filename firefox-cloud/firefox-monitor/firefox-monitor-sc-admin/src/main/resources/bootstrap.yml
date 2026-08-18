@@ -1,0 +1,26 @@
+server:
+  port: 6500
+
+zlt:
+  nacos:
+    server-addr: ${FIREFOX_SERVER_ADDR:}
+
+spring:
+  application:
+    name: sc-admin
+  security:
+    user:
+      name: 'admin'
+      password: ${FIREFOX_PASSWORD:}
+  cloud:
+    nacos:
+      config:
+        server-addr: ${FIREFOX_SERVER_ADDR:}
+        file-extension: yml
+        shared-dataids: common.yml
+        refreshable-dataids: common.yml
+      discovery:
+        server-addr: ${FIREFOX_SERVER_ADDR:}
+        metadata:
+          user.name: ${spring.security.user.name}
+          user.password: ${FIREFOX_USER_PASSWORD:}

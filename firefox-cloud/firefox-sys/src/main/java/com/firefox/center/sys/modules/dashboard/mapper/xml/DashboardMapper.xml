@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.firefox.center.sys.modules.dashboard.mapper.DashboardMapper">
+
+	<select id="selectAllData" parameterType="hashmap"  resultType="java.util.HashMap">
+		<![CDATA[
+		select
+		sum(roomSum) roomSum,
+		sum(roomEnd) roomEnd,
+		sum(roomIng) roomIng,
+		sum(roomUnstart) roomUnstart,
+		sum(visitorSum) visitorSum,
+		sum(visitorEnd) visitorEnd,
+		sum(visitorToday) visitorToday,
+		sum(suggestSum) suggestSum,
+		sum(repairSum) repairSum
+		from(
+			select count(*) roomSum,0 roomEnd,0 roomIng,0 roomUnstart,0 visitorSum,0 visitorEnd,0 visitorToday,0 suggestSum,0 repairSum from daily_room_order where start_time>=#{params.start} and end_time<=#{params.end}
+			union
+			select 0,count(*) roomEnd,0,0,0,0,0,0,0 from daily_room_order where start_time>=#{params.start} and end_time<now()
+			union
+			select 0,0,count(*) roomIng,0,0,0,0,0,0 from daily_room_order where start_time<=now() and end_time>=now()
+			union
+			select 0,0,0,count(*) roomUnstart,0,0,0,0,0 from daily_room_order where start_time>=#{params.start} and start_time>now()
+			union
+
+			select 0,0,0,0,count(*) visitorSum,0,0,0,0 from door_visitor_ask where create_time>=#{params.start} and create_time<=#{params.end}
+			union
+			select 0,0,0,0,0,count(*) visitorEnd,0,0,0 from door_visitor_ask where create_time>=#{params.start} and create_time<=concat(date_format(NOW(),'%Y-%m-%d'),' 00:00:00')
+			union
+			select 0,0,0,0,0,0,count(*) visitorToday,0,0 from door_visitor_ask where TO_DAYS(create_time) = TO_DAYS(NOW())
+			union
+
+			select 0,0,0,0,0,0,0,count(*) suggestSum,0 from daily_suggestion where create_time>=#{params.start} and create_time<=#{params.end}
+			union
+
+			select 0,0,0,0,0,0,0,0,count(*) repairSum from daily_repair where create_time>=#{params.start} and create_time<=#{params.end}
+		)t
+		]]>
+	</select>
+
+	<select id="selectVisitorCharData_back"  resultType="java.util.HashMap">
+		<![CDATA[
+			select date_format(create_time,'%m') month, count(*) cnum from door_visitor_ask where year(create_time)=year(NOW()) group by date_format(create_time,'%m')
+		]]>
+	</select>
+	<select id="selectVisitorCharData"  resultType="java.util.HashMap">
+		<![CDATA[
+			select a.allday day,case when b.cnum is null then 0 else b.cnum end cnum from
+			(
+				select date_format(DATE_SUB(CURRENT_DATE(),INTERVAL config_id-1 DAY),'%m-%d') allday
+			  	from sys_config
+				order by config_id asc
+				limit 15
+			)a
+			left join(
+				select date_format(create_time,'%m-%d') day,
+				count(*) cnum
+				from door_visitor_ask where create_time>=DATE_SUB(CURRENT_DATE(),INTERVAL 15 DAY) and create_time<=now()
+				group by date_format(create_time,'%m-%d')
+			)b
+			on a.allday=b.day
+			order by a.allday asc
+		]]>
+	</select>
+
+	<select id="selectVisitorList"  resultType="java.util.HashMap">
+		<![CDATA[
+			select dva_name,create_time from door_visitor_ask order by create_time desc limit 7
+		]]>
+	</select>
+
+	<select id="selectRoomCharData_back"  resultType="java.util.HashMap">
+		<![CDATA[
+			select date_format(create_time,'%m') month, count(*) cnum from daily_room_order where year(create_time)=year(NOW()) group by date_format(create_time,'%m')
+		]]>
+	</select>
+
+	<select id="selectRoomCharData"  resultType="java.util.HashMap">
+		<![CDATA[
+			select a.allday day,case when b.cnum is null then 0 else b.cnum end cnum from
+			(
+				select date_format(DATE_SUB(CURRENT_DATE(),INTERVAL config_id-1 DAY),'%m-%d') allday
+			  	from sys_config
+				order by config_id asc
+				limit 15
+			)a
+			left join(
+				select date_format(create_time,'%m-%d') day,
+				count(*) cnum
+				from daily_room_order where create_time>=DATE_SUB(CURRENT_DATE(),INTERVAL 15 DAY) and create_time<=now()
+				group by date_format(create_time,'%m-%d')
+			)b
+			on a.allday=b.day
+			order by a.allday asc
+		]]>
+	</select>
+
+	<select id="selectRoomList"  resultType="java.util.HashMap">
+		<![CDATA[
+			select dr.room_name,dro.start_time,dro.end_time from daily_room_order dro left join daily_room dr on dro.room_id=dr.room_id order by create_time desc limit 7
+		]]>
+	</select>
+
+</mapper>

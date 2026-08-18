@@ -1,0 +1,219 @@
+spring:
+  cloud:
+    gateway:
+      httpclient:
+        pool:
+          max-idle-time: 300000
+          response-timeout: 300s
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowCredentials: true
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_UNIQUE
+        - DedupeResponseHeader=Access-Control-Allow-Origin, RETAIN_LAST
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: firefox-auth
+          uri: lb://firefox-auth
+          predicates:
+            - Path=/manage/_api/oauth/**
+          filters:
+            - StripPrefix=2
+            - AddRequestHeader=Access-Control-Allow-Origin,*
+            - AddRequestHeader=X-REAL-HOST,appzxtest.firefox.cn
+            #- AddRequestHeader=x-forwarded-host,appzxtest.firefox.cn
+            - RemoveResponseHeader=Vary
+            #- PreserveHostHeader
+            #- Authorize=false
+            - name: SMEncryptResponseFilter
+            - name: SMDecryptGatewayFilter
+        - id: config-center
+          uri: lb://config-center
+          predicates:
+            - Path=/api/v*/configcenter/**
+          filters:
+            - StripPrefix=1
+        - id: app-center
+          uri: lb://app-center
+          predicates:
+            - Path=/api/v*/appcenter/**
+          filters:
+            - StripPrefix=1
+        - id: user-center
+          uri: lb://user-center
+          predicates:
+            - Path=/api/v*/usercenter/**
+          filters:
+            - StripPrefix=1
+        - id: credit-center
+          uri: lb://credit-center
+          predicates:
+            - Path=/api/v*/creditcenter/**
+          filters:
+            - StripPrefix=1
+        - id: firefox-sys
+          uri: lb://firefox-sys
+          predicates:
+            - Path=/api/sys/**
+          filters:
+            - StripPrefix=1
+        - id: sidecar-py-spread
+          uri: lb://sidecar-py-spread
+          predicates:
+            - Path=/api/pyspread/**
+          filters:
+            - StripPrefix=1
+              #- name: CacheGatewayFilter
+              #args:
+              # exp: 600
+              #- name: CacheResponseFilter
+        - id: sidecar-py-sp
+          uri: lb://sidecar-py-sp
+          predicates:
+            - Path=/api/spread/pyspread/**
+          filters:
+            - StripPrefix=2
+        - id: open-sidecar-action
+          uri: lb://open-sidecar-action
+          predicates:
+            - Path=/api/pyaction/**
+          filters:
+            - StripPrefix=1
+        - id: open-sidecar-manage
+          uri: lb://open-sidecar-manage
+          predicates:
+            - Path=/api/manage/**
+          filters:
+            - StripPrefix=2
+        - id: metabase
+          uri: lb://metabase
+          predicates:
+            - Path=/api/card/**
+          filters:
+            - StripPrefix=0
+            - name: CacheGatewayFilter
+              args:
+                exp: 600
+                ignore:
+                  - /api/card/43
+                  - /api/card/44
+            - name: SMDecryptGatewayFilter
+            - name: MetabaseGatewayFilter
+              args:
+                url: ${FIREFOX_URL:}
+                username: ${FIREFOX_USERNAME:}
+                password: ${FIREFOX_PASSWORD:}
+                exp: 14400 #metabase token失效时间（分钟）
+            - name: CacheResponseFilter
+            - name: SMEncryptResponseFilter
+            - name: MetabaseResponseFilter
+
+        - id: webase-front
+          uri: lb://webase-front
+          predicates:
+            - Path=/api/WeBASE-Front/**
+          filters:
+            - StripPrefix=1
+            - name: WebaseFrontFilter
+            - name: WebaseFrontResponseFilter
+        - id: webase-mgr
+          uri: lb://webase-mgr
+          predicates:
+            - Path=/api/WeBASE-Node-Manager/**
+          filters:
+            - StripPrefix=1
+            - name: WebaseMgrFilter
+            - name: WebaseMgrResponseFilter
+        - id: open-im
+          uri: lb://open-im
+          predicates:
+            - Path=/api/im/**
+          filters:
+            - StripPrefix=2
+            - name: OpenIMFilter
+        - id: open-sidecar-live
+          uri: lb://open-sidecar-live
+          predicates:
+            - Path=/api/live/**
+          filters:
+            - StripPrefix=2
+        - id: sidecar-py-culture
+          uri: lb://sidecar-py-culture
+          predicates:
+            - Path=/api/culture/**
+          filters:
+            - StripPrefix=2
+        - id: open-sidecar-live
+          uri: lb://open-sidecar-live
+          predicates:
+            - Path=/api/live/**
+          filters:
+            - StripPrefix=2
+        - id: sidecar-py-metabase
+          uri: lb://sidecar-py-metabase
+          predicates:
+            - Path=/api/metabase_develop/**
+          filters:
+            - StripPrefix=1
+            - name: CacheGatewayFilter
+              args:
+                exp: 600
+            - name: CacheResponseFilter
+        - id: config-center
+          uri: lb://config-center
+          predicates:
+            - Path=/api/config/**
+          filters:
+            - StripPrefix=1
+
+
+  redis:
+    host: ${firefox.redis.ip}
+    password: ${FIREFOX_PASSWORD:}
+    port: ${firefox.redis.port}
+    database: ${firefox.redis.database}
+    command-timeout: 15000
+    max-attempts: 5
+    max-redirects: 3
+    max-active: 20
+    max-wait: -1
+    max-idle: 8
+    min-idle: 2
+    test-on-borrow: true
+
+my:
+  gateway:
+    app-id: ${FIREFOX_APP_ID:}
+    enable-logger: true
+    sm4:
+      key: 313a779e9968d4dd0e95bfb992a3af5a
+    ignore:
+      token-filter:
+              #- /api/card/**
+        - /actuator/**
+        - /api/oauth/**
+        - /_api/oauth/**
+        - /register/**
+        - /auth/**
+        - /v*/usercenter/sms/*
+        - /v*/usercenter/mail/*
+        - /sys/**
+        - /api/manage/common/wechat/*
+      menu-resource-filter:
+        - /actuator/**
+        - /oauth/**
+        - /register/**
+        - /auth/**
+        - /v*/usercenter/sms/*
+        - /v*/usercenter/mail/*
+        - /sys/**
+
+
+  level:
+    com.baomidou.dynamic: debug

@@ -1,0 +1,15 @@
+## ide
+**/.idea
+*.iml
+
+## backend
+**/logs/
+**/target/
+**/docker/
+
+*.versionsBackup
+
+## front
+**/*.lock
+**/dist/
+.DS_Store

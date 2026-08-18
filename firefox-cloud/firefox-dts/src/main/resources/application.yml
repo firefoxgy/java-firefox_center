@@ -1,0 +1,172 @@
+spring:
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
+  datasource:
+    dynamic:
+      primary: firefox_user
+      strict: false
+      druid: #以下是全局默认值，可以全局更改
+        #监控统计拦截的filters
+        filters: stat
+        #配置初始化大小/最小/最大
+        initial-size: 1
+        min-idle: 6
+        max-active: 6
+        #获取连接等待超时时间
+        max-wait: 60000
+        #间隔多久进行一次检测，检测需要关闭的空闲连接
+        time-between-eviction-runs-millis: 60000
+        #一个连接在池中最小生存的时间
+        min-evictable-idle-time-millis: 300000
+        validation-query: SELECT 1
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+        #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
+        pool-prepared-statements: false
+        max-pool-prepared-statement-per-connection-size: 20
+        stat:
+          merge-sql: true
+          log-slow-sql: true
+          slow-sql-millis: 2000
+          primary: firefox_user
+      datasource:
+        firefox_user:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        kp145:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        xp171:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        yl172:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        jh173:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        zyy174:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        fg175:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        zx176:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        ls177:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        ml178:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        qj179:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        sj180:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        dg181:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        lp182:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        lj183:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        ld186:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        yj187:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        ys188:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        wx189:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        sf190:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        gs191:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+        mh192:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+
+mybatis-plus:
+  mapper-locations:
+    - classpath*:com/firefox/center/**/xml/*Mapper.xml
+  global-config:
+    db-config:
+      id-type: auto
+
+
+# Ribbon 配置
+ribbon:
+  # 连接超时
+  ConnectTimeout: 5000
+  # 响应超时
+  ReadTimeout: 10000
+
+firefox:
+  swagger:
+    enabled: true
+    title: 用户中心
+    description: 用户中心接口文档
+    version: 1.0
+    base-package: com.firefox.center.user.controller
+  cache-manager:
+    configs:
+      - key: menu
+        second: 600
+      - key: user
+        second: 1800

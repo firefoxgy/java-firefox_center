@@ -1,0 +1,65 @@
+firefox:
+  swagger:
+    license: 开屏技术.中台部
+    licenseUrl:
+    termsOfServiceUrl:
+    version: 1.0.0.RELEASE
+    contact:
+      url:
+      name: 苏杰
+      email: 153282687@qq.com
+    global-operation-parameters:
+      - name: x-access-token
+        description: 用户身份token
+        modelRef: String
+        parameterType: header
+        required: true
+        defaultValue: "Bearer test"
+
+knife4j:
+  enable: true
+  setting:
+    enableReloadCacheParameter: true
+    enableVersion: true
+    enableDynamicParameter: true
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: 开屏技术.技术中台部.苏杰
+
+
+server:
+  shutdown: GRACEFUL
+  servlet:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+  undertow:
+    threads:
+      io: 4 # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+      worker: 80  # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+    buffer-size: 2048  # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理 , 每块buffer的空间大小,越小的空间被利用越充分
+    direct-buffers: true  # 是否分配的直接内存
+
+spring:
+  lifecycle:
+    # 优雅停机宽限期时间
+    timeout-per-shutdown-phase: 30s
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
+      enabled: true

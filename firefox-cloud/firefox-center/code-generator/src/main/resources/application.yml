@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: ${FIREFOX_URL:}
+    username: ${FIREFOX_USERNAME:}
+    password: ${FIREFOX_PASSWORD:}
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis-plus:
+  mapper-locations:
+    - classpath*:com/firefox/center/**/xml/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.firefox.center.generator.model

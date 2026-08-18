@@ -1,0 +1,154 @@
+spring:
+  datasource:
+    dynamic:
+      primary: master # 配置默认数据库
+      datasource:
+        master:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          initialSize: 5
+          minIdle: 5
+          maxActive: 20
+        # 多数据源配置
+        open:
+          url: ${FIREFOX_URL:}
+          username: ${FIREFOX_USERNAME:}
+          password: ${FIREFOX_PASSWORD:}
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          initialSize: 5
+          minIdle: 5
+          maxActive: 10
+      druid: #以下是全局默认值，可以全局更改
+        #监控统计拦截的filters
+        filters: stat
+        #配置初始化大小/最小/最大
+        initial-size: 10
+        min-idle: 10
+        max-active: 20
+        #获取连接等待超时时间
+        max-wait: 60000
+        #间隔多久进行一次检测，检测需要关闭的空闲连接
+        time-between-eviction-runs-millis: 60000
+        #一个连接在池中最小生存的时间
+        min-evictable-idle-time-millis: 300000
+        validation-query: SELECT 1
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+        #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
+        pool-prepared-statements: false
+        max-pool-prepared-statement-per-connection-size: 20
+        stat:
+          merge-sql: true
+          log-slow-sql: true
+          slow-sql-millis: 2000
+          primary: master
+  autoconfigure:
+    exclude:  com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure # 去除druid配置
+
+  redis:
+    host: ${firefox.redis.ip}
+    port: ${firefox.redis.port}
+    password: ${FIREFOX_PASSWORD:}
+    database: ${firefox.redis.database-sys}
+    timeout: ${firefox.redis.timeout}
+    command-timeout: 5000
+    max-attempts: 5
+    max-redirects: 3
+    max-active: 20
+    max-wait: -1
+    max-idle: 8
+    min-idle: 2
+    test-on-borrow: true
+  aop:
+    proxy-target-class: true
+  activiti:
+    check-process-definitions: false
+    #启用作业执行器
+    async-executor-activate: false
+    #启用异步执行器
+    job-executor-activate: false
+  jpa:
+    open-in-view: false
+  #配置freemarker
+  freemarker:
+    # 设置模板后缀名
+    suffix: .ftl
+    # 设置文档类型
+    content-type: text/html
+    # 设置页面编码格式
+    charset: UTF-8
+    # 设置页面缓存
+    cache: false
+    prefer-file-system-access: false
+    # 设置ftl文件路径
+    template-loader-path:
+      - classpath:/templates
+  # 设置静态文件路径，js,css等
+  mvc:
+    static-path-pattern: /**
+  resource:
+    static-locations: classpath:/static/,classpath:/public/
+
+mybatis-plus:
+  mapper-locations:
+    - classpath*:com/firefox/center/**/xml/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.firefox.center.user.model
+  global-config:
+    db-config:
+      id-type: auto
+
+firefox:
+  swagger:
+    enabled: true
+    title: 用户中心
+    description: 用户中心接口文档
+    version: 1.0
+    base-package: com.firefox.center.user.controller
+  # 本地：local\阿里云：alioss
+  uploadType: local
+  webRoot: https://yndailyapi.kpinfo.cn
+  upload:
+    path: /opt/files
+    webapp: /opt/files
+    imageFolder: /image
+    documentFolder: /doc
+    videoFolder: /video
+    musicFolder: /music
+    barCodeFolder: /barcode
+    qrCodeFolder: /qrcode
+    excelFolder: /excel
+    imageType: [".bmp", ".jpg", ".jpeg", ".png", ".jfif", ".tiff", ".gif", ".pcx", ".tga", ".exif", ".fpx", ".svg", ".psd",".cdr", ".pcd", ".dxf", ".ufo", ".eps", ".ai", ".raw", ".wmf"]
+    documentType: [".txt", ".doc", ".docx", ".xls", ".htm", ".html", ".jsp", ".rtf", ".wpd", ".pdf", ".ppt",".js"]
+    videoType: [".mp4", ".avi", ".mov", ".wmv", ".asf", ".navi", ".3gp", ".mkv", ".f4v", ".rmvb", ".webm"]
+    musicType: [".mp3", ".wma", ".wav", ".mod", ".ra", ".cd", ".md", ".asf", ".aac", ".vqf", ".ape", ".mid", ".ogg",".m4a", ".vqf"]
+  shiro:
+    excludeUrls: /category/**,/visual/**,/map/**,/jmreport/bigscreen2/**
+  cache-manager:
+    configs:
+      - key: menu
+        second: 600
+      - key: user
+        second: 1800
+  #阿里云oss存储配置
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    accessKey: ${FIREFOX_ACCESS_KEY:}
+    secretKey: ${FIREFOX_SECRET_KEY:}
+    bucketName: firefoxos
+    staticDomain: ??
+  # ElasticSearch 6设置
+  elasticsearch:
+    cluster-name: firefox-ES
+    cluster-nodes: 127.0.0.1:9200
+    check-enabled: false
+
+#微信小程序
+wx:
+  mini:
+    state: formal  #developer为开发版；trial为体验版；formal为正式版
+    appId: ${FIREFOX_APP_ID:}
+    appSecret: ${FIREFOX_APP_SECRET:}

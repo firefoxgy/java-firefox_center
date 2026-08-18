@@ -1,0 +1,77 @@
+spring:
+  datasource:
+    url: ${FIREFOX_URL:}
+    username: ${FIREFOX_USERNAME:}
+    password: ${FIREFOX_PASSWORD:}
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    filters: stat,slf4j
+    maxActive: 20
+    initialSize: 2
+    minIdle: 1
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+
+  redis:
+    host: ${firefox.redis.ip}
+    port: ${firefox.redis.port}
+    password: ${FIREFOX_PASSWORD:}
+    database: ${firefox.redis.database}
+    timeout: ${firefox.redis.timeout}
+    lettuce:
+      pool:
+        min-idle: 2
+        max-idle: 8
+        max-active: 20
+        max-wait: 1000
+      timeout: 5000
+
+mybatis-plus:
+  mapper-locations:
+    - classpath*:com/firefox/center/**/xml/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.firefox.center.oauth.model
+  global-config:
+    db-config:
+      id-type: auto
+
+# Ribbon 配置
+ribbon:
+  # 连接超时
+  ConnectTimeout: 20000
+  # 响应超时
+  ReadTimeout: 50000
+
+firefox:
+  oauth2:
+    token:
+      store:
+        type: authJwt
+  swagger:
+    enabled: true
+    title: 认证中心
+    description: 认证中心接口文档
+    version: 1.0
+    base-package: com.firefox.center.oauth.controller
+  security:
+    ignore:
+      # 忽略认证的地址
+      httpUrls: >
+        /validata/**,
+        /clients,
+        /clients/**,
+        /login.html,
+        /css/**,
+        /images/**,
+        /js/**
+    code:
+      # 忽略验证码的应用编号
+      ignoreClientCode: app
