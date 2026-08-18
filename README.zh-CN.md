@@ -14,7 +14,15 @@
 * 注重代码规范，严格控制包依赖，每个工程基本保持最小依赖
 &nbsp;
 
-## 2. 功能介绍
+## 2. 运行时架构
+
+该运行时架构基于仓库中的启动配置、Gateway 路由、服务发现、Feign 客户端、认证流程、持久化和监控配置绘制。
+
+![Firefox Center 运行时架构](docs/architecture/firefox-runtime.architecture.visual-check.1440x900.light.png)
+
+可以查看[交互式架构图](docs/architecture/firefox-runtime.architecture.html)，或检查 [Archify 架构源文件](docs/architecture/firefox-runtime.architecture.json)。
+
+## 3. 功能介绍
 
 * **统一认证功能**
   * 支持 OAuth 2.0 的四种授权模式
@@ -58,7 +66,7 @@
 
 &nbsp;
 
-## 3. 模块说明
+## 4. 模块说明
 
 ```lua
 java-firefox_center -- 父项目和公共依赖管理

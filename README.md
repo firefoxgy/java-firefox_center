@@ -14,7 +14,15 @@
 * Emphasizes coding standards and strictly controls package dependencies, keeping each module's dependencies to a minimum
 &nbsp;
 
-## 2. Features
+## 2. Runtime Architecture
+
+The runtime architecture is derived from the repository's startup configuration, Gateway routes, service discovery, Feign clients, authentication flow, persistence, and monitoring configuration.
+
+![Firefox Center runtime architecture](docs/architecture/firefox-runtime.architecture.visual-check.1440x900.light.png)
+
+Explore the [interactive architecture diagram](docs/architecture/firefox-runtime.architecture.html) or inspect the [Archify source specification](docs/architecture/firefox-runtime.architecture.json).
+
+## 3. Features
 
 * **Unified Authentication**
   * Supports all four OAuth 2.0 authorization grant types
@@ -58,7 +66,7 @@
 
 &nbsp;
 
-## 3. Module Structure
+## 4. Module Structure
 
 ```lua
 java-firefox_center -- Parent project and shared dependency management
