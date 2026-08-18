@@ -1,5 +1,7 @@
 # java-firefox_center_open_platform
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 [TOC]
 
 ## 1. Project Overview
