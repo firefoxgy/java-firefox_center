@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Firefox Center 运行时架构",
+    "subtitle": "基于仓库启动配置与调用关系绘制的微服务运行时视图",
+    "output": "firefox-runtime.architecture.html",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/firefoxgy/java-firefox_center",
+      "revision": "0b15e74e1f273abaa08a0aa7884a8f010b5d8aaa"
+    },
+    "views": [
+      {
+        "id": "main-request",
+        "label": "主请求链路",
+        "focus": ["browser", "vue-ui", "gateway", "auth", "service-centers", "mysql"],
+        "note": "从浏览器进入 Vue 管理端，经 Gateway 与 OAuth2/JWT 鉴权后访问业务中心并持久化。"
+      },
+      {
+        "id": "service-control",
+        "label": "服务治理",
+        "focus": ["gateway", "auth", "service-centers", "nacos", "redis"],
+        "note": "Nacos 提供配置与服务发现，Redis 承载令牌、客户端及业务缓存。"
+      },
+      {
+        "id": "operations",
+        "label": "异步与运维",
+        "focus": ["gateway", "service-centers", "kafka", "monitoring", "jobs-sidecars"],
+        "note": "日志事件流向 Kafka/日志中心，Actuator 服务由监控端聚合，任务与 Sidecar 作为旁路运行。"
+      }
+    ],
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "frontend": { "label": "前端" },
+        "backend": { "label": "Java 服务" },
+        "database": { "label": "数据存储" },
+        "cloud": { "label": "服务治理/运维" },
+        "security": { "label": "安全边界" },
+        "messagebus": { "label": "事件通道" },
+        "external": { "label": "外部参与者" }
+      }
+    }
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [60, 90],
+    "cols": 5,
+    "gapX": 90,
+    "gapY": 80,
+    "cellW": 130,
+    "cellH": 70
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "external",
+      "label": "平台用户",
+      "sublabel": "Browser",
+      "tag": "HTTPS",
+      "row": 1,
+      "col": 0
+    },
+    {
+      "id": "vue-ui",
+      "type": "frontend",
+      "label": "ui-ant-design-vue",
+      "sublabel": "Vue 管理端",
+      "row": 1,
+      "col": 1,
+      "sources": [
+        { "path": "ui-ant-design-vue/src/router/index.js", "line": 21, "label": "前端路由" }
+      ]
+    },
+    {
+      "id": "gateway",
+      "type": "backend",
+      "label": "firefox-gateway",
+      "sublabel": "Spring Cloud Gateway :8910",
+      "tag": "动态路由 + 限流",
+      "row": 1,
+      "col": 2,
+      "sources": [
+        { "path": "firefox-cloud/firefox-gateway/src/main/resources/bootstrap.yml", "line": 30, "label": "监听端口" },
+        { "path": "firefox-cloud/firefox-gateway/src/main/resources/application.yml", "line": 23, "label": "服务路由" },
+        { "path": "firefox-cloud/firefox-gateway/src/main/java/com/firefox/center/gateway/service/RouteOperator.java", "line": 28, "label": "动态路由" }
+      ]
+    },
+    {
+      "id": "auth",
+      "type": "security",
+      "label": "firefox-auth",
+      "sublabel": "OAuth2 / JWT :8920",
+      "tag": "Spring Security",
+      "row": 0,
+      "col": 3,
+      "sources": [
+        { "path": "firefox-cloud/firefox-auth/src/main/resources/bootstrap.yml", "line": 27, "label": "服务启动配置" },
+        { "path": "firefox-cloud/firefox-auth/src/main/java/com/firefox/center/AuthServerApp.java", "line": 19, "label": "Feign 启用" },
+        { "path": "firefox-cloud/firefox-auth/src/main/java/com/firefox/center/oauth/controller/OAuth2AppController.java", "line": 91, "label": "OAuth 接口" }
+      ]
+    },
+    {
+      "id": "service-centers",
+      "type": "backend",
+      "label": "业务中心集群",
+      "sublabel": "七个领域服务",
+      "tag": "REST + OpenFeign",
+      "row": 1,
+      "col": 3,
+      "sources": [
+        { "path": "firefox-cloud/firefox-center/app-center/src/main/java/com/firefox/center/AppCenterApp.java", "line": 16, "label": "app-center" },
+        { "path": "firefox-cloud/firefox-center/config-center/src/main/java/com/firefox/center/ConfigCenterApp.java", "line": 16, "label": "config-center" },
+        { "path": "firefox-cloud/firefox-center/user-center/src/main/java/com/firefox/center/UserCenterApp.java", "line": 16, "label": "user-center" }
+      ]
+    },
+    {
+      "id": "nacos",
+      "type": "cloud",
+      "label": "Nacos",
+      "sublabel": "配置中心 + 服务注册发现 :8848",
+      "row": 2,
+      "col": 2,
+      "sources": [
+        { "path": "firefox-cloud/firefox-gateway/src/main/resources/bootstrap.yml", "line": 42, "label": "Gateway Nacos" },
+        { "path": "firefox-cloud/firefox-center/app-center/src/main/resources/bootstrap.yml", "line": 27, "label": "服务注册发现" }
+      ]
+    },
+    {
+      "id": "redis",
+      "type": "database",
+      "label": "Redis",
+      "sublabel": "令牌 / 客户端 / 路由 / 业务缓存",
+      "row": 0,
+      "col": 4,
+      "sources": [
+        { "path": "firefox-cloud/src/main/nacos/config/redis.yml", "line": 9, "label": "共享 Redis" },
+        { "path": "firefox-cloud/firefox-common/firefox-base/src/main/java/com/firefox/center/common/constants/SecurityConstants.java", "line": 118, "label": "OAuth 缓存键" }
+      ]
+    },
+    {
+      "id": "mysql",
+      "type": "database",
+      "label": "MySQL",
+      "sublabel": "业务与 OAuth 持久化",
+      "row": 1,
+      "col": 4,
+      "sources": [
+        { "path": "firefox-cloud/src/main/nacos/config/mysql.yml", "line": 9, "label": "共享数据源" },
+        { "path": "firefox-cloud/firefox-doc/sql/oauth-center.sql", "line": 5, "label": "OAuth 数据模型" }
+      ]
+    },
+    {
+      "id": "kafka",
+      "type": "messagebus",
+      "label": "Kafka",
+      "sublabel": "网关与服务日志事件",
+      "tag": "异步旁路",
+      "row": 2,
+      "col": 3,
+      "sources": [
+        { "path": "firefox-cloud/firefox-gateway/src/main/resources/logback-spring.xml", "line": 1, "label": "网关日志配置" }
+      ]
+    },
+    {
+      "id": "monitoring",
+      "type": "cloud",
+      "label": "监控中心",
+      "sublabel": "Spring Boot Admin + log-center",
+      "row": 2,
+      "col": 4,
+      "sources": [
+        { "path": "firefox-cloud/firefox-monitor/firefox-monitor-sc-admin/src/main/resources/bootstrap.yml", "line": 2, "label": "sc-admin :6500" },
+        { "path": "firefox-cloud/firefox-monitor/firefox-monitor-log-center/src/main/resources/bootstrap.yml", "line": 2, "label": "log-center :7200" }
+      ]
+    },
+    {
+      "id": "jobs-sidecars",
+      "type": "backend",
+      "label": "任务与 Sidecar",
+      "sublabel": "job / sidecar / dts",
+      "tag": "后台运行",
+      "row": 2,
+      "col": 0,
+      "sources": [
+        { "path": "firefox-cloud/firefox-dts/src/main/resources/bootstrap.yml", "line": 12, "label": "DTS :7777" },
+        { "path": "firefox-cloud/firefox-sidecar/src/main/java/com/firefox/center/sidecar/SidecarApplication.java", "line": 6, "label": "Sidecar 启动类" },
+        { "path": "firefox-cloud/firefox-job/firefox-job-executor/src/main/java/com/xxl/job/executor/JobExecutorApplication.java", "line": 9, "label": "任务执行器" }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Firefox Center 微服务运行域",
+      "wraps": ["gateway", "auth", "service-centers", "nacos", "redis", "mysql", "kafka", "monitoring", "jobs-sidecars"]
+    },
+    {
+      "kind": "security-group",
+      "label": "OAuth2 / JWT 安全边界",
+      "wraps": ["gateway", "auth", "redis"]
+    }
+  ],
+  "connections": [
+    { "id": "browser-ui", "from": "browser", "to": "vue-ui", "label": "HTTPS", "variant": "emphasis", "labelDy": -28 },
+    { "id": "ui-gateway", "from": "vue-ui", "to": "gateway", "label": "/api", "variant": "emphasis", "labelDy": -28 },
+    { "id": "gateway-auth", "from": "gateway", "to": "auth", "variant": "security", "route": "orthogonal-h" },
+    { "id": "gateway-services", "from": "gateway", "to": "service-centers", "variant": "emphasis" },
+    { "id": "auth-services", "from": "auth", "to": "service-centers", "variant": "security" },
+    { "id": "services-mysql", "from": "service-centers", "to": "mysql", "variant": "emphasis" },
+    { "id": "auth-redis", "from": "auth", "to": "redis", "variant": "default" },
+    { "id": "services-redis", "from": "service-centers", "to": "redis", "route": "orthogonal-h" },
+    { "id": "nacos-gateway", "from": "nacos", "to": "gateway", "variant": "dashed" },
+    { "id": "nacos-services", "from": "nacos", "to": "service-centers", "variant": "dashed", "route": "orthogonal-h" },
+    { "id": "services-kafka", "from": "service-centers", "to": "kafka", "variant": "dashed" },
+    { "id": "kafka-monitoring", "from": "kafka", "to": "monitoring", "variant": "dashed" },
+    { "id": "services-monitoring", "from": "service-centers", "to": "monitoring", "variant": "dashed", "route": "orthogonal-h" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "同步请求主链",
+      "items": [
+        "ui-ant-design-vue 通过 Gateway 统一进入后端",
+        "OAuth2/JWT 负责登录、令牌签发与请求安全",
+        "Gateway 按 Nacos 服务名路由到各业务中心"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "数据与服务治理",
+      "items": [
+        "Nacos 同时承担配置中心和服务注册发现",
+        "Redis 保存 OAuth 与业务热点数据",
+        "MySQL 保存 OAuth、租户和业务数据"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "运维旁路",
+      "items": [
+        "Kafka/日志中心承接异步日志事件",
+        "Spring Boot Admin 聚合服务健康与 Actuator 指标",
+        "任务、DTS 与 Sidecar 独立运行并调用业务服务"
+      ]
+    }
+  ]
+}
